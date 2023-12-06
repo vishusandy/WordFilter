@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "word_filter"
+readme = "README.md"
+requires-python = ">=3.8"
+version = "0.1.0"
+license = { text = "Apache-2.0" }
+dependencies = []
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.autopep8]
+max_line_length = 120
+
