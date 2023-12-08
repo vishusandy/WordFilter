@@ -30,6 +30,17 @@ class FilterTests(FilterBase):
 
         self.assertEqual(self.has(output_file), expected_output)
 
+    def testCsvSingleCol(self):
+        input = "\n".join(["bear", "bird", "cheetah", "duck"])
+        input_file = self.add("input.csv", input)
+
+        expected_output = "\n".join(["bear", "bird", "cheetah", "duck"])
+
+        output_file = "output.txt"
+        self.patch(input_file, output_file, "--csv")()
+
+        self.assertEqual(self.has(output_file), expected_output)
+
     def testCsvAuto(self):
         input = "\n".join(["bear,1.5", "bird,1.6", "cheetah,1.7", "duck,1.8"])
         input_file = self.add("input.csv", input)
