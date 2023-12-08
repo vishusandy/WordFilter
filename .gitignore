@@ -1,3 +1,6 @@
+data/
+output.txt
+
 *.so
 *.pot
 __pycache__/
