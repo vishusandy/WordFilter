@@ -5,13 +5,21 @@ import random
 from typing import Optional
 
 
-from .util import is_int, is_float
+from .util import convert_nums
 from .remove import remove, remove_by
 
 
-def matches(word: str, min: int, max: int, chars: Optional[set[str]]) -> bool:
-    return len(word) in range(min, max + 1) and (
-        chars is None or all(c in chars for c in word)
+def matches(
+    word: str,
+    min: int,
+    max: int,
+    chars: Optional[set[str]],
+    required: Optional[set[str]],
+) -> bool:
+    return (
+        len(word) in range(min, max + 1)
+        and (chars is None or all(c in chars for c in word))
+        and (required is None or any(c in required for c in word))
     )
 
 
@@ -20,6 +28,7 @@ def filter_words_list(
     min: int,
     max: int,
     chars: Optional[set[str]],
+    required: Optional[set[str]],
     lower: bool,
     sort: bool,
     shuffle: bool,
@@ -31,7 +40,7 @@ def filter_words_list(
         word = line.strip().lower() if lower else line.strip()
         if word == "":
             continue
-        if matches(word, min, max, chars):
+        if matches(word, min, max, chars, required):
             words.append(word)
 
     if exclude is not None:
@@ -47,23 +56,12 @@ def filter_words_list(
     return words
 
 
-def num(s: str) -> str | int | float:
-    if is_int(s):
-        return int(s)
-    if is_float(s):
-        return float(s)
-    return s
-
-
-def convert_nums(fields: list[str]) -> list[str | float | int]:
-    return [num(f) for f in fields]
-
-
 def filter_words_csv(
     infile: io.TextIOWrapper,
     min: int,
     max: int,
     chars: Optional[set[str]],
+    required: Optional[set[str]],
     lower: bool,
     sort: bool,
     sortby: int,
@@ -84,7 +82,7 @@ def filter_words_csv(
             fields = [f for f in fields if f != ""]
 
         word = fields[wordfield]
-        if matches(word, min, max, chars):
+        if matches(word, min, max, chars, required):
             if sortby != wordfield:
                 words.append(convert_nums(fields))
             else:
@@ -114,7 +112,6 @@ def main():
     parser = argparse.ArgumentParser(description="Filter words")
     parser.add_argument(
         "infile",
-        metavar="infile",
         type=argparse.FileType("r"),
         default=sys.stdin,
         help="Wordlist file; omit to use stdin.",
@@ -132,7 +129,22 @@ def main():
         "--exclude",
         type=argparse.FileType("r"),
         default=None,
+        metavar="FILE",
         help="Exclude any words found in this file.  This implies --sort.",
+    )
+    parser.add_argument(
+        "-c",
+        "--chars",
+        default=None,
+        metavar="CHARS",
+        help="Words may only consist of the specified characters",
+    )
+    parser.add_argument(
+        "-r",
+        "--require",
+        default=None,
+        metavar="CHARS",
+        help="All words must include at least one of these characters",
     )
     parser.add_argument(
         "-m",
@@ -149,9 +161,6 @@ def main():
         default=15,
         metavar="N",
         help="Include only words with at most LENGTH chars.  Default is 15.",
-    )
-    parser.add_argument(
-        "-c", "--chars", default=None, help="Only include words with these letters"
     )
     parser.add_argument(
         "--no-lower",
@@ -184,7 +193,7 @@ def main():
         "--sortby",
         default=None,
         type=int,
-        metavar="COL_NUM",
+        metavar="COL",
         help="Sort by the specified column number.  Starts at 0.",
     )
     parser.add_argument(
@@ -214,11 +223,11 @@ def main():
     )
     args = parser.parse_args()
 
-    if args.field != 0 or args.sep is not None:
-        args.csv = True
-
-    if len(sys.argv) >= 2 and sys.argv[1].endswith(".csv"):
-        args.csv = True
+    if not args.csv:
+        if args.field != 0 or args.sep is not None or args.header or args.keepfields:
+            args.csv = True
+        elif len(sys.argv) >= 2 and sys.argv[1].endswith(".csv"):
+            args.csv = True
 
     if args.csv:
         if args.sep is None:
@@ -242,6 +251,7 @@ def main():
             args.sort = True
 
     args.chars = set(args.chars) if args.chars is not None else None
+    args.require = set(args.require) if args.require is not None else None
 
     if args.csv:
         words = filter_words_csv(
@@ -249,6 +259,7 @@ def main():
             args.min,
             args.max,
             args.chars,
+            args.require,
             args.lower,
             args.sort,
             args.sortby,
@@ -265,6 +276,7 @@ def main():
             args.min,
             args.max,
             args.chars,
+            args.require,
             args.lower,
             args.sort,
             args.shuffle,

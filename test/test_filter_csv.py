@@ -67,6 +67,18 @@ class FilterTests(FilterBase):
 
         self.assertEqual(self.has(output_file), expected_output)
 
+    def testCsvRequiredChars(self):
+        input = "\n".join(["bear", "birds", "cheetah", "duck"])
+        input_file = self.add("input.txt", input)
+
+        chars = "b"
+        expected_output = "\n".join(["bear", "birds"])
+
+        output_file = "output.txt"
+        self.patch(input_file, output_file, "--require", chars)()
+
+        self.assertEqual(self.has(output_file), expected_output)
+
     def testCsvNoLower(self):
         input = "\n".join(["Bear,4", "bIrds,4", "chEEtaH,4", "DucK,4"])
         input_file = self.add("input.csv", input)
