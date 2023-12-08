@@ -47,6 +47,18 @@ def filter_words_list(
     return words
 
 
+def num(s: str) -> str | int | float:
+    if is_int(s):
+        return int(s)
+    if is_float(s):
+        return float(s)
+    return s
+
+
+def convert_nums(fields: list[str]) -> list[str | float | int]:
+    return [num(f) for f in fields]
+
+
 def filter_words_csv(
     infile: io.TextIOWrapper,
     min: int,
@@ -62,7 +74,7 @@ def filter_words_csv(
     keepfields: bool,
     exclude: Optional[io.TextIOWrapper],
 ) -> list[str]:
-    words: list[list[str]] = []
+    words: list[list] = []
     for line in infile:
         line = line.strip().lower() if lower else line.strip()
         if line == "":
@@ -73,7 +85,10 @@ def filter_words_csv(
 
         word = fields[wordfield]
         if matches(word, min, max, chars):
-            words.append(fields)
+            if sortby != wordfield:
+                words.append(convert_nums(fields))
+            else:
+                words.append(fields)
 
     if exclude is not None:
         words = remove_by(exclude, words, wordfield)

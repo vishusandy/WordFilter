@@ -90,7 +90,7 @@ def remove_print(
             iw += 1
             ie += 1
         if w < e or ie >= exc_len:
-            print(w)
+            print(words[iw])
             iw += 1
         else:
             ie += 1

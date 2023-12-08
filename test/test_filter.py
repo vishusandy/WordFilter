@@ -264,7 +264,7 @@ class FilterTests(unittest.TestCase):
         self.assertEqual(self.has(output_file), expected_output)
 
     def testCsvSort2(self):
-        input = "\n".join(["4,cheetah", "4,birds", "4,duck", "4,bear"])
+        input = "\n".join(["4,cheetah", "3,birds", "2,duck", "1,bear"])
         input_file = self.add("input.csv", input)
 
         expected_output = "\n".join(["bear", "birds", "cheetah", "duck"])
@@ -347,6 +347,28 @@ class FilterTests(unittest.TestCase):
         input_file = self.add("input.csv", input)
 
         expected_output = "\n".join(["cheetah", "bird", "duck", "bear"])
+
+        output_file = "output.txt"
+        self.patch(input_file, output_file, "--csv", "--sortby", "1")()
+
+        self.assertEqual(self.has(output_file), expected_output)
+
+    def testCsvSortByInt(self):
+        input = "\n".join(["bear,4", "bird,2", "cheetah,10", "duck,3"])
+        input_file = self.add("input.csv", input)
+
+        expected_output = "\n".join(["bird", "duck", "bear", "cheetah"])
+
+        output_file = "output.txt"
+        self.patch(input_file, output_file, "--csv", "--sortby", "1")()
+
+        self.assertEqual(self.has(output_file), expected_output)
+
+    def testCsvSortByFloat(self):
+        input = "\n".join(["bear,40.0", "bird,0400.0", "cheetah,10.0", "duck,30.0"])
+        input_file = self.add("input.csv", input)
+
+        expected_output = "\n".join(["cheetah", "duck", "bear", "bird"])
 
         output_file = "output.txt"
         self.patch(input_file, output_file, "--csv", "--sortby", "1")()
