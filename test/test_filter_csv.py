@@ -1,5 +1,5 @@
-import unittest
 import tempfile
+import unittest
 
 from .filter_base import FilterBase
 
@@ -98,6 +98,17 @@ class FilterTests(FilterBase):
 
         output_file = "output.txt"
         self.patch(input_file, output_file, "--csv", "--no-lower")()
+
+        self.assertEqual(self.has(output_file), expected_output)
+
+    def testCsvIgnoreShuffle(self):
+        input = "\n".join(["cheetah,4", "birds,4", "duck,4", "bear,4"])
+        input_file = self.add("input.csv", input)
+
+        expected_output = "\n".join(["bear", "birds", "cheetah", "duck"])
+
+        output_file = "output.txt"
+        self.patch(input_file, output_file, "--csv", "--sort", "--shuffle")()
 
         self.assertEqual(self.has(output_file), expected_output)
 

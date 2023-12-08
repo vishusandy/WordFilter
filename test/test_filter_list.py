@@ -1,5 +1,5 @@
-import unittest
 import tempfile
+import unittest
 
 from .filter_base import FilterBase
 
@@ -74,6 +74,17 @@ class FilterTests(FilterBase):
         self.patch(input_file, output_file, "--no-lower")()
 
         self.assertEqual(self.has(output_file), input)
+
+    def testIgnoreShuffle(self):
+        input = "\n".join(["cheetah", "birds", "duck", "bear"])
+        input_file = self.add("input.txt", input)
+
+        expected_output = "\n".join(["bear", "birds", "cheetah", "duck"])
+
+        output_file = "output.txt"
+        self.patch(input_file, output_file, "--sort", "--shuffle")()
+
+        self.assertEqual(self.has(output_file), expected_output)
 
     def testSort(self):
         input = "\n".join(["cheetah", "birds", "duck", "bear"])
