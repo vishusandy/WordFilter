@@ -1,4 +1,5 @@
 import argparse
+from dataclasses import dataclass
 import sys
 import io
 import random
@@ -23,58 +24,52 @@ def matches(
     )
 
 
-def filter_words_list(
-    infile: io.TextIOWrapper,
-    min: int,
-    max: int,
-    chars: Optional[set[str]],
-    required: Optional[set[str]],
-    lower: bool,
-    sort: bool,
-    shuffle: bool,
-    limit: int,
-    exclude: Optional[io.TextIOWrapper],
-) -> list[str]:
+@dataclass
+class CommonArgs:
+    infile: io.TextIOWrapper
+    exclude: Optional[io.TextIOWrapper]
+    min: int
+    max: int
+    chars: Optional[set[str]]
+    required: Optional[set[str]]
+    lower: bool
+    sort: bool
+    shuffle: bool
+    limit: int
+
+
+def filter_words_list(args: CommonArgs) -> list[str]:
     words: list[str] = []
-    for line in infile:
-        word = line.strip().lower() if lower else line.strip()
+    for line in args.infile:
+        word = line.strip().lower() if args.lower else line.strip()
         if word == "":
             continue
-        if matches(word, min, max, chars, required):
+        if matches(word, args.min, args.max, args.chars, args.required):
             words.append(word)
 
-    if exclude is not None:
-        words = remove(exclude, words)
-    elif sort:
+    if args.exclude is not None:
+        words = remove(args.exclude, words)
+    elif args.sort:
         words.sort()
 
-    if not sort and shuffle:
+    if not args.sort and args.shuffle:
         random.shuffle(words)
 
-    if limit > 0:
-        return words[0:limit]
+    if args.limit > 0:
+        return words[0 : args.limit]
     return words
 
 
 def filter_words_csv(
-    infile: io.TextIOWrapper,
-    min: int,
-    max: int,
-    chars: Optional[set[str]],
-    required: Optional[set[str]],
-    lower: bool,
-    sort: bool,
+    args: CommonArgs,
     sortby: int,
-    shuffle: bool,
-    limit: int,
     sep: Optional[str],
     wordfield: int,
     keepfields: bool,
-    exclude: Optional[io.TextIOWrapper],
 ) -> list[str]:
     words: list[list] = []
-    for line in infile:
-        line = line.strip().lower() if lower else line.strip()
+    for line in args.infile:
+        line = line.strip().lower() if args.lower else line.strip()
         if line == "":
             continue
         fields = [f.strip() for f in line.split(sep)]
@@ -82,21 +77,21 @@ def filter_words_csv(
             fields = [f for f in fields if f != ""]
 
         word = fields[wordfield]
-        if matches(word, min, max, chars, required):
+        if matches(word, args.min, args.max, args.chars, args.required):
             if sortby != wordfield:
                 words.append(convert_nums(fields))
             else:
                 words.append(fields)
 
-    if exclude is not None:
-        words = remove_by(exclude, words, wordfield)
-    if sort and (not exclude or wordfield != sortby):
+    if args.exclude is not None:
+        words = remove_by(args.exclude, words, wordfield)
+    if args.sort and (not args.exclude or wordfield != sortby):
         words.sort(key=lambda a: a[sortby])
-    if not sort and shuffle:
+    if not args.sort and args.shuffle:
         random.shuffle(words)
     sep = sep if isinstance(sep, str) else ","
-    if limit > 0:
-        words = words[0:limit]
+    if args.limit > 0:
+        words = words[0 : args.limit]
     if not keepfields:
         return [x[wordfield] for x in words]
     return [sep.join(w) for w in words]
@@ -253,36 +248,25 @@ def main():
     args.chars = set(args.chars) if args.chars is not None else None
     args.require = set(args.require) if args.require is not None else None
 
+    data = CommonArgs(
+        args.infile,
+        args.exclude,
+        args.min,
+        args.max,
+        args.chars,
+        args.require,
+        args.lower,
+        args.sort,
+        args.shuffle,
+        args.limit,
+    )
+
     if args.csv:
         words = filter_words_csv(
-            args.infile,
-            args.min,
-            args.max,
-            args.chars,
-            args.require,
-            args.lower,
-            args.sort,
-            args.sortby,
-            args.shuffle,
-            args.limit,
-            args.sep,
-            args.field,
-            args.keepfields,
-            args.exclude,
+            data, args.sortby, args.sep, args.field, args.keepfields
         )
     else:
-        words = filter_words_list(
-            args.infile,
-            args.min,
-            args.max,
-            args.chars,
-            args.require,
-            args.lower,
-            args.sort,
-            args.shuffle,
-            args.limit,
-            args.exclude,
-        )
+        words = filter_words_list(data)
 
     write_words(words, args.outfile)
     args.infile.close()
