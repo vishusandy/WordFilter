@@ -20,3 +20,15 @@ def add_prefix(prefix: str, file: str) -> str:
     p = Path(file)
     s = str(p)[len(p.anchor) :]
     return str(Path(prefix) / s)
+
+
+def num(s: str) -> str | int | float:
+    if is_int(s):
+        return int(s)
+    if is_float(s):
+        return float(s)
+    return s
+
+
+def convert_nums(fields: list[str]) -> list[str | float | int]:
+    return [num(f) for f in fields]
