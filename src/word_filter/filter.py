@@ -1,41 +1,11 @@
 import argparse
-from dataclasses import dataclass
-import sys
 import io
 import random
+import sys
 from typing import Optional
 
-
-from .util import convert_nums
+from .util import convert_nums, matches, CommonArgs
 from .remove import remove, remove_by
-
-
-def matches(
-    word: str,
-    min: int,
-    max: int,
-    chars: Optional[set[str]],
-    required: Optional[set[str]],
-) -> bool:
-    return (
-        len(word) in range(min, max + 1)
-        and (chars is None or all(c in chars for c in word))
-        and (required is None or any(c in required for c in word))
-    )
-
-
-@dataclass
-class CommonArgs:
-    infile: io.TextIOWrapper
-    exclude: Optional[io.TextIOWrapper]
-    min: int
-    max: int
-    chars: Optional[set[str]]
-    required: Optional[set[str]]
-    lower: bool
-    sort: bool
-    shuffle: bool
-    limit: int
 
 
 def filter_words_list(args: CommonArgs) -> list[str]:
@@ -104,12 +74,13 @@ def write_words(words: list[str], outfile: io.TextIOWrapper):
 def main():
     # print(sys.argv)
 
-    parser = argparse.ArgumentParser(description="Filter words")
+    parser = argparse.ArgumentParser(description="Filter and sort a list of words.")
+    csv_args = parser.add_argument_group("csv")
     parser.add_argument(
         "infile",
         type=argparse.FileType("r"),
         default=sys.stdin,
-        help="Wordlist file; omit to use stdin.",
+        help="Wordlist file; omit to use stdin.  Each word must be on its own line.",
         nargs="?",
     )
     parser.add_argument(
@@ -120,26 +91,11 @@ def main():
         help="Output file; omit to write to stdout.",
     )
     parser.add_argument(
-        "-x",
-        "--exclude",
-        type=argparse.FileType("r"),
-        default=None,
-        metavar="FILE",
-        help="Exclude any words found in this file.  This implies --sort.",
-    )
-    parser.add_argument(
         "-c",
         "--chars",
         default=None,
         metavar="CHARS",
         help="Words may only consist of the specified characters",
-    )
-    parser.add_argument(
-        "-r",
-        "--require",
-        default=None,
-        metavar="CHARS",
-        help="All words must include at least one of these characters",
     )
     parser.add_argument(
         "-m",
@@ -158,20 +114,6 @@ def main():
         help="Include only words with at most LENGTH chars.  Default is 15.",
     )
     parser.add_argument(
-        "--no-lower",
-        dest="lower",
-        action="store_false",
-        help="Do not convert words to lowercase.",
-    )
-    parser.add_argument(
-        "-s", "--sort", action="store_true", help="Sort words alphabetically."
-    )
-    parser.add_argument(
-        "--shuffle",
-        action="store_true",
-        help="Randomly shuffle the wordlist.  Ignored if --sort is also specified.",
-    )
-    parser.add_argument(
         "-n",
         "--limit",
         type=int,
@@ -180,46 +122,82 @@ def main():
         help="Limit how many words are returned.",
     )
     parser.add_argument(
+        "-r",
+        "--require",
+        dest="required",
+        default=None,
+        metavar="CHARS",
+        help="All words must include at least one of these characters",
+    )
+    parser.add_argument(
+        "-s", "--sort", action="store_true", help="Sort words alphabetically."
+    )
+    parser.add_argument(
+        "-x",
+        "--exclude",
+        type=argparse.FileType("r"),
+        default=None,
+        metavar="FILE",
+        help="Exclude any words found in this file.  This implies --sort.",
+    )
+    parser.add_argument(
+        "--no-lower",
+        dest="lower",
+        action="store_false",
+        help="Do not convert words to lowercase.",
+    )
+    parser.add_argument(
+        "--shuffle",
+        action="store_true",
+        help="Randomly shuffle the wordlist.  Ignored if --sort is also specified.",
+    )
+    csv_args.add_argument(
         "--csv",
         action="store_true",
         help="Treat the wordlist as a csv file.",
     )
-    parser.add_argument(
-        "--sortby",
-        default=None,
-        type=int,
-        metavar="COL",
-        help="Sort by the specified column number.  Starts at 0.",
-    )
-    parser.add_argument(
-        "--sep",
-        default=None,
-        metavar="SEP",
-        help="File is a csv deliminated by the specified character.  \\t specifies a tab character.  Default is any blank space.  Implies --csv.",
-    )
-    parser.add_argument(
+    csv_args.add_argument(
         "-f",
         "--field",
         default=0,
         type=int,
         metavar="COL",
-        help="In a csv file, use the specified column number as the word field.  Starts at 0.  Default is 0.  Implies --csv.",
+        help="In a csv file, use the specified column number as the word field.  Starts at 0.  Defaults to 0.  Implies --csv.",
     )
-    parser.add_argument(
-        "--header",
-        action="store_true",
-        help="Skip the first line of the csv file.  The header is removed from the output unless -k is also specified.",
-    )
-    parser.add_argument(
+    csv_args.add_argument(
         "-k",
         "--keepfields",
         action="store_true",
-        help="Output all csv fields for matching lines instead of just the selected field.",
+        help="Output all csv fields for matching lines instead of just the selected field.  Implies --csv.",
+    )
+    csv_args.add_argument(
+        "--sortby",
+        default=None,
+        type=int,
+        metavar="COL",
+        help="Sort by the specified column number.  Starts at 0.  Defaults to 0.  Implies --csv.",
+    )
+    csv_args.add_argument(
+        "--sep",
+        default=None,
+        metavar="SEP",
+        help="File is a csv deliminated by the specified character.  \\t specifies a tab character.  Default is any blank space.  Implies --csv.",
+    )
+    csv_args.add_argument(
+        "--header",
+        action="store_true",
+        help="Skip the first line of the csv file.  The header is removed from the output unless -k is also specified.  Implies --csv.",
     )
     args = parser.parse_args()
 
     if not args.csv:
-        if args.field != 0 or args.sep is not None or args.header or args.keepfields:
+        if (
+            args.field != 0
+            or args.sep is not None
+            or args.header
+            or args.keepfields
+            or args.sortby != 0
+        ):
             args.csv = True
         elif len(sys.argv) >= 2 and sys.argv[1].endswith(".csv"):
             args.csv = True
@@ -246,7 +224,7 @@ def main():
             args.sort = True
 
     args.chars = set(args.chars) if args.chars is not None else None
-    args.require = set(args.require) if args.require is not None else None
+    args.required = set(args.required) if args.required is not None else None
 
     data = CommonArgs(
         args.infile,
@@ -254,7 +232,7 @@ def main():
         args.min,
         args.max,
         args.chars,
-        args.require,
+        args.required,
         args.lower,
         args.sort,
         args.shuffle,
