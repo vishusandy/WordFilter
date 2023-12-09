@@ -25,7 +25,7 @@ class FilterTests(FilterBase):
 
         expected_output = "\n".join(["bear", "bird", "cheetah", "duck"])
 
-        output_file = "output.txt"
+        output_file = "output.csv"
         self.patch(input_file, output_file, "--csv")()
 
         self.assertEqual(self.has(output_file), expected_output)
@@ -36,7 +36,7 @@ class FilterTests(FilterBase):
 
         expected_output = "\n".join(["bear", "bird", "cheetah", "duck"])
 
-        output_file = "output.txt"
+        output_file = "output.csv"
         self.patch(input_file, output_file, "--csv")()
 
         self.assertEqual(self.has(output_file), expected_output)
@@ -47,7 +47,7 @@ class FilterTests(FilterBase):
 
         expected_output = "\n".join(["bear", "bird", "cheetah", "duck"])
 
-        output_file = "output.txt"
+        output_file = "output.csv"
         self.patch(input_file, output_file)()
 
         self.assertEqual(self.has(output_file), expected_output)
@@ -61,7 +61,7 @@ class FilterTests(FilterBase):
 
         expected_output = "\n".join(["bear", "bird", "duck"])
 
-        output_file = "output.txt"
+        output_file = "output.csv"
         self.patch(input_file, output_file, "--csv", "-x", str(exclude_file))()
 
         self.assertEqual(self.has(output_file), expected_output)
@@ -73,7 +73,7 @@ class FilterTests(FilterBase):
         chars = "abcehrt"
         expected_output = "\n".join(["bear", "cheetah"])
 
-        output_file = "output.txt"
+        output_file = "output.csv"
         self.patch(input_file, output_file, "--csv", "-c", chars)()
 
         self.assertEqual(self.has(output_file), expected_output)
@@ -85,7 +85,7 @@ class FilterTests(FilterBase):
         chars = "b"
         expected_output = "\n".join(["bear", "birds"])
 
-        output_file = "output.txt"
+        output_file = "output.csv"
         self.patch(input_file, output_file, "--require", chars)()
 
         self.assertEqual(self.has(output_file), expected_output)
@@ -96,7 +96,7 @@ class FilterTests(FilterBase):
 
         expected_output = "\n".join(["Bear", "bIrds", "chEEtaH", "DucK"])
 
-        output_file = "output.txt"
+        output_file = "output.csv"
         self.patch(input_file, output_file, "--csv", "--no-lower")()
 
         self.assertEqual(self.has(output_file), expected_output)
@@ -107,7 +107,7 @@ class FilterTests(FilterBase):
 
         expected_output = "\n".join(["bear", "birds", "cheetah", "duck"])
 
-        output_file = "output.txt"
+        output_file = "output.csv"
         self.patch(input_file, output_file, "--csv", "--sort", "--shuffle")()
 
         self.assertEqual(self.has(output_file), expected_output)
@@ -118,7 +118,7 @@ class FilterTests(FilterBase):
 
         expected_output = "\n".join(["bear", "birds", "cheetah", "duck"])
 
-        output_file = "output.txt"
+        output_file = "output.csv"
         self.patch(input_file, output_file, "--csv", "--sort")()
 
         self.assertEqual(self.has(output_file), expected_output)
@@ -129,7 +129,7 @@ class FilterTests(FilterBase):
 
         expected_output = "\n".join(["bear", "birds", "cheetah", "duck"])
 
-        output_file = "output.txt"
+        output_file = "output.csv"
         self.patch(input_file, output_file, "--csv", "-f 1", "--sort")()
 
         self.assertEqual(self.has(output_file), expected_output)
@@ -140,7 +140,7 @@ class FilterTests(FilterBase):
 
         expected_output = "\n".join(["birds", "cheetah"])
 
-        output_file = "output.txt"
+        output_file = "output.csv"
         self.patch(input_file, output_file, "--csv", "-m 5")()
 
         self.assertEqual(self.has(output_file), expected_output)
@@ -151,7 +151,7 @@ class FilterTests(FilterBase):
 
         expected_output = "\n".join(["bear", "bird", "duck"])
 
-        output_file = "output.txt"
+        output_file = "output.csv"
         self.patch(input_file, output_file, "--csv", "-M 4")()
 
         self.assertEqual(self.has(output_file), expected_output)
@@ -162,7 +162,7 @@ class FilterTests(FilterBase):
 
         expected_output = "\n".join(["bear", "bird", "cheetah"])
 
-        output_file = "output.txt"
+        output_file = "output.csv"
         self.patch(input_file, output_file, "--csv", "-n 3")()
 
         self.assertEqual(self.has(output_file), expected_output)
@@ -173,7 +173,7 @@ class FilterTests(FilterBase):
 
         expected_output = "\n".join(["bear", "bird", "cheetah", "duck"])
 
-        output_file = "output.txt"
+        output_file = "output.csv"
         self.patch(input_file, output_file, "--csv", "--header")()
 
         self.assertEqual(self.has(output_file), expected_output)
@@ -186,7 +186,7 @@ class FilterTests(FilterBase):
             ["animal,number", "bear,4", "bird,4", "cheetah,4", "duck,4"]
         )
 
-        output_file = "output.txt"
+        output_file = "output.csv"
         self.patch(input_file, output_file, "--csv", "--header", "-k")()
 
         self.assertEqual(self.has(output_file), expected_output)
@@ -197,7 +197,7 @@ class FilterTests(FilterBase):
 
         expected_output = "\n".join(["bear,4", "bird,4", "cheetah,4", "duck,4"])
 
-        output_file = "output.txt"
+        output_file = "output.csv"
         self.patch(input_file, output_file, "--csv", "-k")()
 
         self.assertEqual(self.has(output_file), expected_output)
@@ -208,7 +208,7 @@ class FilterTests(FilterBase):
 
         expected_output = "\n".join(["cheetah", "bird", "duck", "bear"])
 
-        output_file = "output.txt"
+        output_file = "output.csv"
         self.patch(input_file, output_file, "--csv", "--sortby", "1")()
 
         self.assertEqual(self.has(output_file), expected_output)
@@ -219,7 +219,7 @@ class FilterTests(FilterBase):
 
         expected_output = "\n".join(["bird", "duck", "bear", "cheetah"])
 
-        output_file = "output.txt"
+        output_file = "output.csv"
         self.patch(input_file, output_file, "--csv", "--sortby", "1")()
 
         self.assertEqual(self.has(output_file), expected_output)
@@ -230,7 +230,7 @@ class FilterTests(FilterBase):
 
         expected_output = "\n".join(["cheetah", "duck", "bear", "bird"])
 
-        output_file = "output.txt"
+        output_file = "output.csv"
         self.patch(input_file, output_file, "--csv", "--sortby", "1")()
 
         self.assertEqual(self.has(output_file), expected_output)
@@ -241,7 +241,7 @@ class FilterTests(FilterBase):
 
         expected_output = "\n".join(["bear", "bird", "cheetah", "duck"])
 
-        output_file = "output.txt"
+        output_file = "output.csv"
         self.patch(input_file, output_file, "--csv", "-f", "1")()
 
         self.assertEqual(self.has(output_file), expected_output)
@@ -252,7 +252,7 @@ class FilterTests(FilterBase):
 
         expected_output = "\n".join(["bear", "bird", "cheetah", "duck"])
 
-        output_file = "output.txt"
+        output_file = "output.csv"
         self.patch(input_file, output_file, "--csv", "--sep", "\\t")()
 
         self.assertEqual(self.has(output_file), expected_output)
@@ -263,7 +263,7 @@ class FilterTests(FilterBase):
 
         expected_output = "\n".join(["bear", "bird", "cheetah", "duck"])
 
-        output_file = "output.txt"
+        output_file = "output.csv"
         self.patch(input_file, output_file, "--csv")()
 
         self.assertEqual(self.has(output_file), expected_output)
@@ -274,8 +274,138 @@ class FilterTests(FilterBase):
 
         expected_output = "\n".join(["bear", "bird", "cheetah", "duck"])
 
-        output_file = "output.txt"
+        output_file = "output.csv"
         self.patch(input_file, output_file, "--csv", "--sep", " ")()
+
+        self.assertEqual(self.has(output_file), expected_output)
+
+    def testCsvWeightsNoKeep(self):
+        tiers = ["aoeuhtns", "id", "',.pgcrl", "yf", ";qjkmwvz", "xb"]
+
+        input = "\n".join(["hone"])
+        input_file = self.add("input.csv", input)
+
+        expected_output = "\n".join(["hone"])
+
+        output_file = "output.csv"
+        self.patch(input_file, output_file, "--csv", "-w", *tiers[0:1])()
+
+        self.assertEqual(self.has(output_file), expected_output)
+
+    def testCsvWeights(self):
+        tiers = ["aoeuhtns", "id", "',.pgcrl", "yf", ";qjkmwvz", "xb"]
+
+        input = "\n".join(["hone"])
+        input_file = self.add("input.csv", input)
+
+        expected_output = "\n".join(["1.0\t1.0\thone"])
+
+        output_file = "output.csv"
+        self.patch(input_file, output_file, "--csv", "-k", "-w", *tiers[0:1])()
+
+        self.assertEqual(self.has(output_file), expected_output)
+
+    def testCsvWeightsThree(self):
+        tiers = ["aoeuhtns", "id", "',.pgcrl", "yf", ";qjkmwvz", "xb"]
+
+        input = "\n".join(["hone", "honed", "apple"])
+        input_file = self.add("input.csv", input)
+
+        expected_output = "\n".join(
+            [
+                "0.14285714285714285\t0.14285714285714285\thone",
+                "0.42857142857142855\t0.9714285714285714\thoned",
+                "0.7142857142857142\t0.8\tapple",
+            ]
+        )
+
+        output_file = "output.csv"
+        self.patch(input_file, output_file, "--csv", "-k", "-w", *tiers[0:3])()
+
+        self.assertEqual(self.has(output_file), expected_output)
+
+    def testCsvWeightsKeepFieldsWithHeader(self):
+        tiers = ["aoeuhtns", "id", "',.pgcrl", "yf", ";qjkmwvz", "xb"]
+
+        input = "\n".join(
+            ["word\tfreq", "hone\t875783", "honed\t426659", "apple\t50551171"]
+        )
+        input_file = self.add("input.csv", input)
+
+        expected_output = "\n".join(
+            [
+                "tier_rank\ttier_weight\tword\tfreq",
+                "0.14285714285714285\t0.14285714285714285\thone\t875783",
+                "0.42857142857142855\t0.9714285714285714\thoned\t426659",
+                "0.7142857142857142\t0.8\tapple\t50551171",
+            ]
+        )
+
+        output_file = "output.csv"
+        self.patch(
+            input_file, output_file, "--csv", "--header", "-k", "-w", *tiers[0:3]
+        )()
+
+        self.assertEqual(self.has(output_file), expected_output)
+
+    def testCsvWeightsKeepFields(self):
+        tiers = ["aoeuhtns", "id", "',.pgcrl", "yf", ";qjkmwvz", "xb"]
+
+        input = "\n".join(["hone\t875783", "honed\t426659", "apple\t50551171"])
+        input_file = self.add("input.csv", input)
+
+        expected_output = "\n".join(
+            [
+                "0.14285714285714285\t0.14285714285714285\thone\t875783",
+                "0.42857142857142855\t0.9714285714285714\thoned\t426659",
+                "0.7142857142857142\t0.8\tapple\t50551171",
+            ]
+        )
+
+        output_file = "output.csv"
+        self.patch(input_file, output_file, "--csv", "-k", "-w", *tiers[0:3])()
+
+        self.assertEqual(self.has(output_file), expected_output)
+
+    def testCsvWeightsSortByKeep(self):
+        tiers = ["aoeuhtns", "id", "',.pgcrl", "yf", ";qjkmwvz", "xb"]
+
+        input = "\n".join(["hone\t875783", "honed\t426659", "apple\t50551171"])
+        input_file = self.add("input.csv", input)
+
+        expected_output = "\n".join(
+            [
+                "0.42857142857142855\t0.9714285714285714\thoned\t426659",
+                "0.14285714285714285\t0.14285714285714285\thone\t875783",
+                "0.7142857142857142\t0.8\tapple\t50551171",
+            ]
+        )
+
+        output_file = "output.csv"
+        self.patch(
+            input_file, output_file, "--csv", "-k", "--sortby", "3", "-w", *tiers[0:3]
+        )()
+
+        self.assertEqual(self.has(output_file), expected_output)
+
+    def testCsvWeightsSortBy(self):
+        tiers = ["aoeuhtns", "id", "',.pgcrl", "yf", ";qjkmwvz", "xb"]
+
+        input = "\n".join(["hone\t875783", "honed\t426659", "apple\t50551171"])
+        input_file = self.add("input.csv", input)
+
+        expected_output = "\n".join(
+            [
+                "honed",
+                "hone",
+                "apple",
+            ]
+        )
+
+        output_file = "output.csv"
+        self.patch(
+            input_file, output_file, "--csv", "--sortby", "3", "-w", *tiers[0:3]
+        )()
 
         self.assertEqual(self.has(output_file), expected_output)
 

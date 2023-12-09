@@ -10,7 +10,7 @@ if [ "$SCRIPT_DIR" != "$PWD" ]; then
     cd "$SCRIPT_DIR" || quit
 fi
 proj=$(basename "${SCRIPT_DIR}")
-python3 -m src."$proj".filter "$@"
+python3 -m src."$proj".main "$@"
 
 # file="src/word_filter/filter.py"
 # python "$SCRIPT_DIR/$file" "$@"

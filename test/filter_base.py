@@ -3,7 +3,7 @@ from unittest.mock import patch
 from pathlib import Path
 import tempfile
 
-from src.word_filter.filter import main as word_filter
+from src.word_filter.main import main as word_filter
 from src.word_filter.util import add_prefix
 
 # See https://docs.python.org/3/library/unittest.html
