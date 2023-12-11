@@ -12,7 +12,7 @@ def write_words(words: list[str], outfile: io.TextIOWrapper):
 
 
 def process_args(args: argparse.Namespace):
-    if not args.csv:
+    if args.csv == False:
         if (
             args.field != 0
             or args.sep is not None
@@ -22,7 +22,7 @@ def process_args(args: argparse.Namespace):
             or args.weight is not None
         ):
             args.csv = True
-        elif len(sys.argv) >= 2 and sys.argv[1].endswith(".csv"):
+        elif args.infile is not None and args.infile.name.endswith(".csv"):
             args.csv = True
 
     if args.csv:
