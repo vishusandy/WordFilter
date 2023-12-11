@@ -90,6 +90,22 @@ def main():
         help="Output file; omit to write to stdout.",
     )
     parser.add_argument(
+        "-i",
+        "--include",
+        type=argparse.FileType("r"),
+        default=None,
+        metavar="FILE",
+        help="Only include words found in this file.",
+    )
+    parser.add_argument(
+        "-x",
+        "--exclude",
+        type=argparse.FileType("r"),
+        default=None,
+        metavar="FILE",
+        help="Exclude any words found in this file.",
+    )
+    parser.add_argument(
         "-c",
         "--chars",
         default=None,
@@ -139,14 +155,6 @@ def main():
         metavar="CHARS",
         action="append",
         help="Adds another weight tier with the given characters.  This can be specified multiple times.  The first -w will be the lowest tier, with the last -w being the highest ranking tier.",
-    )
-    parser.add_argument(
-        "-x",
-        "--exclude",
-        type=argparse.FileType("r"),
-        default=None,
-        metavar="FILE",
-        help="Exclude any words found in this file.  This implies --sort.",
     )
     parser.add_argument(
         "--no-lower",
@@ -202,6 +210,7 @@ def main():
     data = CommonArgs(
         args.infile,
         args.exclude,
+        args.include,
         args.min,
         args.max,
         args.chars,

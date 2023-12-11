@@ -42,6 +42,7 @@ def convert_nums(fields: list) -> list[str | float | int]:
 class CommonArgs:
     infile: io.TextIOWrapper
     exclude: Optional[io.TextIOWrapper]
+    include: Optional[io.TextIOWrapper]
     min: int
     max: int
     chars: Optional[set[str]]
