@@ -3,10 +3,13 @@ import io
 
 
 def remove(
-    exclude_file: io.TextIOWrapper,
+    exclude_list: io.TextIOWrapper | str,
     words: list[str],
 ) -> list[str]:
-    exclude = [l.strip() for l in exclude_file.readlines() if l.strip() != ""]
+    if isinstance(exclude_list, str):
+        exclude = [l.strip() for l in exclude_list.splitlines() if l.strip() != ""]
+    else:
+        exclude = [l.strip() for l in exclude_list.readlines() if l.strip() != ""]
     exclude.sort()
     words.sort()
 
@@ -16,16 +19,24 @@ def remove(
     iw = 0
     ie = 0
 
+    # print(f"{word_len=} {exc_len=}")
+
     while iw < word_len and ie < exc_len:
         w = words[iw]
         e = exclude[ie]
+
+        # print(f"{iw=} {w=} {ie=} {e=} ", end="")
+
         if w == e:
             iw += 1
             ie += 1
-        if w < e or ie >= exc_len:
+            # print("eq - advancing both")
+        elif w < e or ie >= exc_len:
+            # print(f"lt - added {w}, advancing word")
             output.append(words[iw])
             iw += 1
         else:
+            # print(f"gt - advancing exclude")
             ie += 1
     while iw < word_len:
         output.append(words[iw])
@@ -35,11 +46,14 @@ def remove(
 
 
 def remove_by(
-    exclude_file: io.TextIOWrapper,
+    exclude_list: io.TextIOWrapper | str,
     words: list[list[str]],
     field: int,
 ) -> list[list[str]]:
-    exclude = [l.strip() for l in exclude_file.readlines() if l.strip() != ""]
+    if isinstance(exclude_list, str):
+        exclude = [l.strip() for l in exclude_list.splitlines() if l.strip() != ""]
+    else:
+        exclude = [l.strip() for l in exclude_list.readlines() if l.strip() != ""]
     exclude.sort()
     words.sort(key=lambda w: w[field])
 
@@ -55,7 +69,7 @@ def remove_by(
         if w == e:
             iw += 1
             ie += 1
-        if w < e or ie >= exc_len:
+        elif w < e or ie >= exc_len:
             output.append(words[iw])
             iw += 1
         else:
