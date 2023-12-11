@@ -77,7 +77,7 @@ def main():
     csv_args = parser.add_argument_group("csv")
     parser.add_argument(
         "infile",
-        type=argparse.FileType("r"),
+        type=argparse.FileType("rt"),
         default=sys.stdin,
         help="Wordlist file; omit to use stdin.  Each word must be on its own line.",
         nargs="?",
@@ -85,14 +85,14 @@ def main():
     parser.add_argument(
         "outfile",
         nargs="?",
-        type=argparse.FileType("w"),
+        type=argparse.FileType("wt"),
         default=sys.stdout,
         help="Output file; omit to write to stdout.",
     )
     parser.add_argument(
         "-i",
         "--include",
-        type=argparse.FileType("r"),
+        type=argparse.FileType("rt"),
         default=None,
         metavar="FILE",
         help="Only include words found in this file.",
@@ -100,7 +100,7 @@ def main():
     parser.add_argument(
         "-x",
         "--exclude",
-        type=argparse.FileType("r"),
+        type=argparse.FileType("rt"),
         default=None,
         metavar="FILE",
         help="Exclude any words found in this file.",
