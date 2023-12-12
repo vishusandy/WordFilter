@@ -27,6 +27,8 @@ def process_args(args: argparse.Namespace):
 
     if args.csv:
         if args.sep is None:
+            if args.infile.name == "<stdin>":
+                print(f"Reading from stdin.", file=sys.stderr)
             line = args.infile.readline()
             if line.find(",") != -1:
                 args.sep = ","
@@ -46,8 +48,8 @@ def process_args(args: argparse.Namespace):
                     args.outfile.write(header)
 
         if args.weight is not None:
-            # print(f"weights={args.weight} flattened={sum(args.weight, [])}")
-            args.weight = [w for w in sum(args.weight, []) if w != ""]
+            # print(f"weights={args.weight}")
+            # args.weight = [w for w in sum(args.weight, []) if w != ""]
             l = len(args.weight)
             if l == 0:
                 args.weight = None
@@ -151,7 +153,7 @@ def main():
         "-w",
         "--weight",
         default=None,
-        nargs="*",
+        # nargs="*",
         metavar="CHARS",
         action="append",
         help="Adds another weight tier with the given characters.  This can be specified multiple times.  The first -w will be the lowest tier, with the last -w being the highest ranking tier.",
@@ -166,6 +168,13 @@ def main():
         "--shuffle",
         action="store_true",
         help="Randomly shuffle the wordlist.  Ignored if --sort is also specified.",
+    )
+    parser.add_argument(
+        "--rev",
+        "--reverse",
+        dest="reverse",
+        action="store_true",
+        help="Reverse the output list",
     )
 
     csv_args.add_argument(
@@ -205,7 +214,9 @@ def main():
         action="store_true",
         help="Skip the first line of the csv file.  The header is removed from the output unless -k is also specified.  Implies --csv.",
     )
-    args = process_args(parser.parse_args())
+
+    args = parser.parse_args()
+    args = process_args(args)
 
     data = CommonArgs(
         args.infile,
@@ -219,6 +230,7 @@ def main():
         args.sort,
         args.shuffle,
         args.limit,
+        args.reverse,
     )
 
     if args.csv:

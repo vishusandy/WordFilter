@@ -51,6 +51,7 @@ class CommonArgs:
     sort: bool
     shuffle: bool
     limit: int
+    reverse: bool
 
     def matches(self, word: str) -> bool:
         return (

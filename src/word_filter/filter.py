@@ -23,6 +23,8 @@ def filter_words_list(args: CommonArgs) -> list[str]:
     elif args.shuffle:
         random.shuffle(words)
 
+    if args.reverse:
+        words.reverse()
     if args.limit > 0:
         return words[0 : args.limit]
     return words
@@ -71,6 +73,8 @@ def filter_words_csv(
     elif args.shuffle:
         random.shuffle(words)
 
+    if args.reverse:
+        words.reverse()
     sep = sep if isinstance(sep, str) else ","
     if args.limit > 0:
         words = words[0 : args.limit]
