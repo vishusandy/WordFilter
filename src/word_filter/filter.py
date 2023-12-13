@@ -53,7 +53,7 @@ def filter_words_csv(
             tmp = [f.strip() for f in line.split(sep)]
             fields = tier_fields(tmp[wordfield], weight) + tmp
 
-        if len(fields) == 0:
+        if fields[wordfield + adj] == "" or len(fields) == 0:
             continue
         if any(map(lambda s: s == "", fields)):
             fields = [f for f in fields if f != ""]

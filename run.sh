@@ -9,6 +9,7 @@ quit() {
 if [ "$SCRIPT_DIR" != "$PWD" ]; then
     cd "$SCRIPT_DIR" || quit
 fi
+
 proj=$(basename "${SCRIPT_DIR}")
 python3 -m src."$proj".main "$@"
 

@@ -1,6 +1,5 @@
 def tier(word: str, weight: list[str]) -> list[float]:
     m = float(pow(2, len(weight)) - 1.0)  # max rank
-    print(f"{m=}")
     rank = 0.0  # tier rank
     w = 0.0  # weight (% contained in each tier)
     p = 0  # previous tier
@@ -12,7 +11,6 @@ def tier(word: str, weight: list[str]) -> list[float]:
             rank += r
             percent = ws.count(True) / len(word)
             w += (r - p) * percent + p
-            print(f"tier {i}: {p=} {t=} {r=} {percent=} w{i}={ (r - p) * percent + p}")
             p = t
     return [rank, w]
 

@@ -43,7 +43,6 @@ class FilterBase(unittest.TestCase):
             output.append(str(p))
 
         if isinstance(outfile, Path):
-            print("outfile is Path")
             output.append(str(outfile))
         elif isinstance(outfile, str):
             p = Path(add_prefix(self.dir.name, outfile))
