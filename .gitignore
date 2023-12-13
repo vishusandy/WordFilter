@@ -36,3 +36,9 @@ MANIFEST
 # Per-project virtualenvs
 .venv*/
 .conda*/
+
+data/hunspell.en_US.aff
+data/hunspell.en_US.dic
+scripts/hunspell.py
+.gitignore
+data/hunspell.txt
