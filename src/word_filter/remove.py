@@ -1,9 +1,10 @@
-import argparse
 import io
 from typing import Any
 
 
-def prepare(text: io.TextIOWrapper | str, sort: bool = False):
+def prepare(text: io.TextIOWrapper | str | None, sort: bool = False) -> set[str] | None:
+    if text is None:
+        return None
     if isinstance(text, str):
         arr = [l.strip() for l in text.splitlines() if l.strip() != ""]
     else:
@@ -12,7 +13,7 @@ def prepare(text: io.TextIOWrapper | str, sort: bool = False):
     if sort:
         arr.sort()
 
-    return arr
+    return set(arr)
 
 
 def add_remove(
@@ -20,23 +21,24 @@ def add_remove(
     include_list: io.TextIOWrapper | str | None,
     words: list[Any],
 ) -> list[Any]:
-    if exclude_list is not None:
-        return remove(exclude_list, words)
-    if include_list is not None:
-        return only(include_list, words)
+    # if exclude_list is not None:
+    #     return remove(exclude_list, words)
+    # if include_list is not None:
+    #     return only(include_list, words)
+    if exclude_list is None and include_list is None:
+        return words
 
-    if exclude_list is not None and include_list is not None:
-        output: list[Any] = []
-        include = prepare(include_list)
-        exclude = prepare(exclude_list)
+    output: list[Any] = []
+    include = prepare(include_list)
+    exclude = prepare(exclude_list)
 
-        for word in words:
-            if word not in exclude and word in include:
-                output.append(word)
+    for word in words:
+        if (exclude is None or word not in exclude) and (
+            include is None or word in include
+        ):
+            output.append(word)
 
-        return output
-
-    return words
+    return output
 
 
 def add_remove_by(
@@ -45,79 +47,24 @@ def add_remove_by(
     words: list[list[Any]],
     field: int,
 ) -> list[list[Any]]:
-    if exclude_list is not None:
-        return remove_by(exclude_list, words, field)
-    if include_list is not None:
-        return only_by(include_list, words, field)
+    # if exclude_list is not None:
+    #     return remove_by(exclude_list, words, field)
+    # if include_list is not None:
+    #     return only_by(include_list, words, field)
 
-    if exclude_list is not None and include_list is not None:
-        output: list[list[Any]] = []
-        include = prepare(include_list)
-        exclude = prepare(exclude_list)
+    if exclude_list is None and include_list is None:
+        return words
 
-        for fields in words:
-            word = fields[field]
-            if word not in exclude and word in include:
-                output.append(fields)
-
-        return output
-
-    return words
-
-
-def only(
-    include_list: io.TextIOWrapper | str,
-    words: list[Any],
-) -> list[Any]:
-    output: list[Any] = []
-    include = set(prepare(include_list))
-
-    for word in words:
-        if word in include:
-            output.append(word)
-
-    return output
-
-
-def only_by(
-    include_list: io.TextIOWrapper | str, words: list[list[Any]], field: int
-) -> list[list[Any]]:
     output: list[list[Any]] = []
-    include = set(prepare(include_list))
-
+    include = prepare(include_list)
+    exclude = prepare(exclude_list)
+    print(f"excludeIsNone={exclude is None} includeIsNone={include is None}")
     for fields in words:
         word = fields[field]
-        if word in include:
+        ex = exclude is None or word not in exclude
+        inc = include is None or word in include
+        if word == "only":
+            print(f"found only {ex=} {inc=}")
+        if ex and inc:
             output.append(fields)
-
-    return output
-
-
-def remove(
-    exclude_list: io.TextIOWrapper | str,
-    words: list[Any],
-) -> list[Any]:
-    output: list[Any] = []
-    exclude = set(prepare(exclude_list))
-
-    for word in words:
-        if word not in exclude:
-            output.append(word)
-
-    return output
-
-
-def remove_by(
-    exclude_list: io.TextIOWrapper | str,
-    words: list[list[Any]],
-    field: int,
-) -> list[list[Any]]:
-    output: list[list[Any]] = []
-    exclude = set(prepare(exclude_list))
-
-    for fields in words:
-        word = fields[field]
-        if word not in exclude:
-            output.append(fields)
-
     return output

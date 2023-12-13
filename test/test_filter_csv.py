@@ -6,6 +6,10 @@ from .filter_base import FilterBase
 # See https://docs.python.org/3/library/unittest.html
 
 
+def map_tiers(tiers: list[str]):
+    return list(map(lambda w: "-w " + w, tiers))
+
+
 class FilterTests(FilterBase):
     dir: tempfile.TemporaryDirectory[str]
 
@@ -288,7 +292,7 @@ class FilterTests(FilterBase):
         expected_output = "\n".join(["hone"])
 
         output_file = "output.csv"
-        self.patch(input_file, output_file, "--csv", "-w", *tiers[0:1])()
+        self.patch(input_file, output_file, "--csv", *map_tiers(tiers[0:1]))()
 
         self.assertEqual(self.has(output_file), expected_output)
 
@@ -301,7 +305,7 @@ class FilterTests(FilterBase):
         expected_output = "\n".join(["1.0\t1.0\thone"])
 
         output_file = "output.csv"
-        self.patch(input_file, output_file, "--csv", "-k", "-w", *tiers[0:1])()
+        self.patch(input_file, output_file, "--csv", "-k", *map_tiers(tiers[0:1]))()
 
         self.assertEqual(self.has(output_file), expected_output)
 
@@ -320,7 +324,7 @@ class FilterTests(FilterBase):
         )
 
         output_file = "output.csv"
-        self.patch(input_file, output_file, "--csv", "-k", "-w", *tiers[0:3])()
+        self.patch(input_file, output_file, "--csv", "-k", *map_tiers(tiers[0:3]))()
 
         self.assertEqual(self.has(output_file), expected_output)
 
@@ -343,7 +347,12 @@ class FilterTests(FilterBase):
 
         output_file = "output.csv"
         self.patch(
-            input_file, output_file, "--csv", "--header", "-k", "-w", *tiers[0:3]
+            input_file,
+            output_file,
+            "--csv",
+            "--header",
+            "-k",
+            *map_tiers(tiers[0:3]),
         )()
 
         self.assertEqual(self.has(output_file), expected_output)
@@ -363,7 +372,7 @@ class FilterTests(FilterBase):
         )
 
         output_file = "output.csv"
-        self.patch(input_file, output_file, "--csv", "-k", "-w", *tiers[0:3])()
+        self.patch(input_file, output_file, "--csv", "-k", *map_tiers(tiers[0:3]))()
 
         self.assertEqual(self.has(output_file), expected_output)
 
@@ -383,7 +392,13 @@ class FilterTests(FilterBase):
 
         output_file = "output.csv"
         self.patch(
-            input_file, output_file, "--csv", "-k", "--sortby", "3", "-w", *tiers[0:3]
+            input_file,
+            output_file,
+            "--csv",
+            "-k",
+            "--sortby",
+            "3",
+            *map_tiers(tiers[0:3]),
         )()
 
         self.assertEqual(self.has(output_file), expected_output)
@@ -404,7 +419,12 @@ class FilterTests(FilterBase):
 
         output_file = "output.csv"
         self.patch(
-            input_file, output_file, "--csv", "--sortby", "3", "-w", *tiers[0:3]
+            input_file,
+            output_file,
+            "--csv",
+            "--sortby",
+            "3",
+            *map_tiers(tiers[0:3]),
         )()
 
         self.assertEqual(self.has(output_file), expected_output)
