@@ -42,3 +42,5 @@ data/hunspell.en_US.dic
 scripts/hunspell.py
 .gitignore
 data/hunspell.txt
+data/dvorak/lesson_*
+data/dvorak/analysis_*

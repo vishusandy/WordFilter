@@ -73,6 +73,7 @@ def tier_fields(word: str, weight: list[str]) -> list[float]:
             r = t / m  # tier percentage
             rank += r
             percent = ws.count(True) / len(word)
-            w += (r - p) * percent + p
+            # w += (r - p) * percent + p
+            w += r * percent
             p = t
     return [rank, w]
