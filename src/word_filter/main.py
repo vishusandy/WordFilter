@@ -17,7 +17,7 @@ def process_args(args: argparse.Namespace):
             args.field != 0
             or args.sep is not None
             or args.header
-            or args.keepfields
+            or args.keep
             or args.sortby is not None
             or args.weight is not None
         ):
@@ -38,7 +38,7 @@ def process_args(args: argparse.Namespace):
 
         if args.header:
             header = args.infile.readline()
-            if args.keepfields:
+            if args.keep:
                 if args.weight is not None:
                     tmpsep = args.sep if args.sep is not None else "\t"
                     args.outfile.write(
@@ -192,7 +192,7 @@ def main():
     )
     csv_args.add_argument(
         "-k",
-        "--keepfields",
+        "--keep",
         action="store_true",
         help="Output all csv fields for matching lines instead of just the selected field.  Implies --csv.",
     )
@@ -201,7 +201,7 @@ def main():
         default=None,
         type=int,
         metavar="COL",
-        help="Sort by the specified column number.  Starts at 0.  Defaults to 0.  This value must be adjusted (by adding 2) when f -w and -k are present.  When used together -k and -w add two fields to the beginning of each row.  Implies --csv.",
+        help="Sort by the specified column number.  0 is the first field.  Defaults to 0.  This value must be adjusted (by adding 2) when -w/--weight is present, as this will add two fields to the beginning of the row.  When used together -k and -w add two fields to the beginning of each row.  Implies --csv.",
     )
     csv_args.add_argument(
         "--sep",
@@ -235,7 +235,7 @@ def main():
 
     if args.csv:
         words = filter_words_csv(
-            data, args.sortby, args.sep, args.field, args.keepfields, args.weight
+            data, args.sortby, args.sep, args.field, args.keep, args.weight
         )
     else:
         words = filter_words_list(data)
