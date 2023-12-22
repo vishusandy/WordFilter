@@ -10,5 +10,4 @@ if [ "$SCRIPT_DIR" != "$PWD" ]; then
     cd "$SCRIPT_DIR" || quit
 fi
 
-./scripts/dvorak.sh
-./scripts/analyze.sh
+./scripts/lessons/dvorak.sh
