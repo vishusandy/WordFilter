@@ -6,61 +6,67 @@ cd "$SCRIPT_DIR/../" || exit 1
 . "../scripts/common.sh"
 cd "../" || exit 1
 
-dvorak="dvorak/"
+path="dvorak/"
 
-# homerow basic
-run --chars aoeuhtns \
-    -w aoeuhtns \
-    "${DATA_DIR}${dvorak}homerow_basic.csv" \
+tier1=aoeuhtns
+tier2=id
+tier3="'pgcrl"
+tier4=yf
+tier5=qjkmwvz
+tier6=xb
+
+# homerow
+run --chars "${tier1}" \
+    -w "${tier1}" \
+    "${DATA_DIR}${path}homerow_basic.csv" \
     "lesson_1_"
-# --exclude "$(pre "${hrb%\.*}.txt" "$rem_prefix")" \
 
 # homerow plus middle
-run --chars aoeuhtnsid \
-    --require id \
-    -w aoeuhtn \
-    -w id \
-    "${DATA_DIR}${dvorak}homerow_middle.csv" \
+run --chars "${tier1}${tier2}" \
+    --require "${tier2}" \
+    -w "${tier1}" \
+    -w "${tier2}" \
+    "${DATA_DIR}${path}homerow_middle.csv" \
     "lesson_2_"
 
-# toprow basic
-run --chars "aoeuhtnsid'pgcrl" \
-    --require "'pgcrl" \
-    -w aoeuhtn \
-    -w id \
-    -w "'pgcrl" \
-    "${DATA_DIR}${dvorak}toprow_basic.csv" \
+# toprow
+run --chars "${tier1}${tier2}${tier3}" \
+    --require "${tier3}" \
+    -w "${tier1}" \
+    -w "${tier2}" \
+    -w "${tier3}" \
+    "${DATA_DIR}${path}toprow_basic.csv" \
     "lesson_3_"
 
 # toprow plus middle
-run --chars "aoeuhtnsid'pgcrlyf" \
-    --require "yf" \
-    -w aoeuhtn \
-    -w id \
-    -w "'pgcrl" \
-    -w "yf" \
-    "${DATA_DIR}${dvorak}toprow_middle.csv" \
+run --chars "${tier1}${tier2}${tier3}${tier4}" \
+    --require "${tier4}" \
+    -w "${tier1}" \
+    -w "${tier2}" \
+    -w "${tier3}" \
+    -w "${tier4}" \
+    "${DATA_DIR}${path}toprow_middle.csv" \
     "lesson_4_"
 
 # bottom row
-run --chars "aoeuhtnsid'pgcrlyfqjkmwvz" \
-    --require "qjkbmwv" \
-    -w aoeuhtn \
-    -w id \
-    -w "'pgcrl" \
-    -w "yf" \
-    -w "qjkmwvz" \
-    "${DATA_DIR}${dvorak}bottomrow_basic.csv" \
+run --chars "${tier1}${tier2}${tier3}${tier4}${tier5}" \
+    --require "${tier5}" \
+    -w "${tier1}" \
+    -w "${tier2}" \
+    -w "${tier3}" \
+    -w "${tier4}" \
+    -w "${tier5}" \
+    "${DATA_DIR}${path}bottomrow_basic.csv" \
     "lesson_5_"
 
-# bottom rov plus middle
-run --chars "aoeuhtnsid'pgcrlyfqjkmwvzxb" \
-    --require "xb" \
-    -w aoeuhtn \
-    -w id \
-    -w "'pgcrl" \
-    -w "yf" \
-    -w "qjkmwvz" \
-    -w "xb" \
-    "${DATA_DIR}${dvorak}bottomrow_middle.csv" \
+# bottom row plus middle
+run --chars "${tier1}${tier2}${tier3}${tier4}${tier5}${tier6}" \
+    --require "${tier6}" \
+    -w "${tier1}" \
+    -w "${tier2}" \
+    -w "${tier3}" \
+    -w "${tier4}" \
+    -w "${tier5}" \
+    -w "${tier6}" \
+    "${DATA_DIR}${path}bottomrow_middle.csv" \
     "lesson_6_"
