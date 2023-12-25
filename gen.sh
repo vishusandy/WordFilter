@@ -11,3 +11,4 @@ if [ "$SCRIPT_DIR" != "$PWD" ]; then
 fi
 
 ./scripts/lessons/dvorak.sh
+./scripts/lessons/colemak.sh
