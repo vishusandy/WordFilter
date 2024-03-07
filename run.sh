@@ -11,7 +11,7 @@ if [ "$SCRIPT_DIR" != "$PWD" ]; then
 fi
 
 proj=$(basename "${SCRIPT_DIR}")
-if [ "$#" != 0 ]; then
+if [ "$#" -ne 0 ]; then
     python3 -m src."$proj".main "$@"
 else
     python3 -m src."$proj".main "--help"
