@@ -11,11 +11,8 @@ if [ "$SCRIPT_DIR" != "$PWD" ]; then
 fi
 
 proj=$(basename "${SCRIPT_DIR}")
-python3 -m src."$proj".main "$@"
-
-# file="src/word_filter/filter.py"
-# python "$SCRIPT_DIR/$file" "$@"
-
-# Dvorak homerow basic
-# ./run.sh -c 'aoeuhtns' -m 4 -x 10 --csv --header /ares/docs/data/wordlists/unigram_freq.csv dvorak_homerow_basic.txt
-# ./run.sh -c 'aoeuidhtns' -m 4 -x 10 --csv --header /ares/docs/data/wordlists/unigram_freq.csv dvorak_homerow_full.txt
+if [ "$#" != 0 ]; then
+    python3 -m src."$proj".main "$@"
+else
+    python3 -m src."$proj".main "--help"
+fi
