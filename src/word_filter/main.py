@@ -180,7 +180,7 @@ def main():
     csv_args.add_argument(
         "--csv",
         action="store_true",
-        help="Treat the wordlist as a csv file.  Can be used with a regular word list that does not have multiple fields.",
+        help="Treat the wordlist as a csv file.  Can be used with a regular word list that does not have multiple fields.  Default is to attempt automatic detection of csv files.",
     )
     csv_args.add_argument(
         "-f",
